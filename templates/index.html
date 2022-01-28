@@ -12,5 +12,14 @@
         <input type="email" name="email" id=""/>
         <button type="submit">Enter</button>
     </form>
+
+    {# This message appears if the email adress doesn't exist. #}
+    {% if email_not_found %}
+        <div>
+            <p style="color:red; font-size:120%;">
+                Sorry, the email "{{email_not_found}}" wasn't found.
+            </p>
+        </div>
+    {% endif %}
 </body>
 </html>
