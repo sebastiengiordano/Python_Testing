@@ -1,7 +1,6 @@
 import pytest
 from http import HTTPStatus
 
-from tests.conftest import client
 
 @pytest.mark.parametrize('user_email', [
     'email@testuser1.com',
