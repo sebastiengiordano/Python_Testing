@@ -13,6 +13,16 @@
         <button type="submit">Enter</button>
     </form>
 
+    {% with messages = get_flashed_messages()%}
+    {% if messages %}
+        <ul style="color:red; font-size:120%; list-style-type: none;">
+       {% for message in messages %}
+            <li>{{message}}</li>
+        {% endfor %}
+       </ul>
+    {% endif%}
+    {%endwith%}
+
     {# This message appears if the email adress doesn't exist. #}
     {% if email_not_found %}
         <div>
