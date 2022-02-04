@@ -6,6 +6,7 @@ from flask import (
     redirect,
     flash,
     url_for)
+from datetime import datetime
 
 from utils import (
     loadClubs,
@@ -14,7 +15,8 @@ from utils import (
     saveCompetitions,
     get_club_id_by_email,
     get_club_id_by_name,
-    get_competition_id_by_name)
+    get_competition_id_by_name,
+    str_to_datetime)
 
 
 app = Flask(__name__)
@@ -71,21 +73,35 @@ def purchasePlaces():
     # Get club and competition id
     club_id = get_club_id_by_name(club)
     competition_id = get_competition_id_by_name(competition)
-    # Removed points in clubs
-    clubs[club_id]["points"] = str(
-        int(clubs[club_id]["points"])
-        - placesRequired)
-    saveClubs()
-    # Removed points in competitions
-    competitions[competition_id]['numberOfPlaces'] = str(
-        int(competitions[competition_id]['numberOfPlaces'])
-        - placesRequired)
-    saveCompetitions()
-    flash('Great-booking complete!')
-    return render_template(
-        'welcome.html',
-        club=club,
-        competitions=competitions)
+
+    # Check the competition date
+    if (
+            str_to_datetime(competitions[competition_id]['date'])
+            < datetime.today()):
+        flash('    Sorry !!!')
+        flash('This competition has already been played.')
+        flash('You cannot book places.')
+        return render_template(
+            'welcome.html',
+            club=club,
+            competitions=competitions), HTTPStatus.BAD_REQUEST
+    # Everything is OK
+    else:
+        # Removed points in clubs
+        clubs[club_id]["points"] = str(
+            int(clubs[club_id]["points"])
+            - placesRequired)
+        saveClubs()
+        # Removed points in competitions
+        competitions[competition_id]['numberOfPlaces'] = str(
+            int(competitions[competition_id]['numberOfPlaces'])
+            - placesRequired)
+        saveCompetitions()
+        flash('Great-booking complete!')
+        return render_template(
+            'welcome.html',
+            club=club,
+            competitions=competitions)
 
 
 # TODO: Add route for points display
