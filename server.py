@@ -1,4 +1,3 @@
-import json
 from http import HTTPStatus
 from flask import (
     Flask,
@@ -8,17 +7,14 @@ from flask import (
     flash,
     url_for)
 
-
-def loadClubs():
-    with open('clubs.json') as c:
-        listOfClubs = json.load(c)['clubs']
-        return listOfClubs
-
-
-def loadCompetitions():
-    with open('competitions.json') as comps:
-        listOfCompetitions = json.load(comps)['competitions']
-        return listOfCompetitions
+from utils import (
+    loadClubs,
+    loadCompetitions,
+    saveClubs,
+    saveCompetitions,
+    get_club_id_by_email,
+    get_club_id_by_name,
+    get_competition_id_by_name)
 
 
 app = Flask(__name__)
@@ -71,14 +67,23 @@ def book(competition, club):
 
 @app.route('/purchasePlaces', methods=['POST'])
 def purchasePlaces():
-    competition = [
-        c for c in competitions
-        if c['name'] == request.form['competition']][0]
-    club = [c for c in clubs if c['name'] == request.form['club']][0]
+    # Get request hidden data
+    competition = request.form['competition']
+    club = request.form['club']
     placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = (
-        int(competition['numberOfPlaces'])
+    # Get club and competition id
+    club_id = get_club_id_by_name(club)
+    competition_id = get_competition_id_by_name(competition)
+    # Removed points in clubs
+    clubs[club_id]["points"] = str(
+        int(clubs[club_id]["points"])
         - placesRequired)
+    saveClubs()
+    # Removed points in competitions
+    competitions[competition_id]['numberOfPlaces'] = str(
+        int(competitions[competition_id]['numberOfPlaces'])
+        - placesRequired)
+    saveCompetitions()
     flash('Great-booking complete!')
     return render_template(
         'welcome.html',
