@@ -17,8 +17,7 @@ def test__status_code__ok(client, user_email, clubs__data_for_test):
     assert b'Welcome, ' in response.data
     assert bytes(
         user_email,
-        encoding='utf8') \
-            in response.data
+        encoding='utf8') in response.data
     assert b'Logout' in response.data
 
 
@@ -35,3 +34,4 @@ def test__unknow_email_adress(client, clubs__data_for_test):
         in response.data
     assert b'Please enter your secretary email to continue:' \
         in response.data
+    assert b'Sorry, the email' in response.data
