@@ -63,12 +63,30 @@ def competitions__data_for_test(monkeypatch):
             },
             {
                 "name": "Competition in past",
-                date_in_past,
+                "date": date_in_past,
                 "numberOfPlaces": "20"
             },
             {
                 "name": "Competition in future",
-                date_in_future,
+                "date": date_in_future,
                 "numberOfPlaces": "15"
             }]
     monkeypatch.setattr('server.competitions', data_for_test)
+
+
+@pytest.fixture(scope='function')
+def saveClubs__fixture(monkeypatch):
+    '''Used to avoid saving test data in "clubs.json".'''
+
+    def saveClubs__mock():
+        pass
+    monkeypatch.setattr('server.saveClubs', saveClubs__mock)
+
+
+@pytest.fixture(scope='function')
+def saveCompetitions__fixture(monkeypatch):
+    '''Used to avoid saving test data in "competitions.json".'''
+
+    def saveCompetitions__mock():
+        pass
+    monkeypatch.setattr('server.saveCompetitions', saveCompetitions__mock)
