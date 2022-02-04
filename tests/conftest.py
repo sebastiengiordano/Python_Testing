@@ -63,12 +63,12 @@ def competitions__data_for_test(monkeypatch):
             },
             {
                 "name": "Competition in past",
-                date_in_past,
+                "date": date_in_past,
                 "numberOfPlaces": "20"
             },
             {
                 "name": "Competition in future",
-                date_in_future,
+                "date": date_in_future,
                 "numberOfPlaces": "15"
             }]
     monkeypatch.setattr('server.competitions', data_for_test)
