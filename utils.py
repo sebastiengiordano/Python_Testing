@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import server
 
@@ -56,3 +57,7 @@ def get_competition_id_by_name(name):
             break
 
     return competition_id
+
+
+def str_to_datetime(date_time_str):
+    return datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
