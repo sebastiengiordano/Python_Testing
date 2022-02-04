@@ -8,17 +8,14 @@ from flask import (
     flash,
     url_for)
 
-
-def loadClubs():
-    with open('clubs.json') as c:
-        listOfClubs = json.load(c)['clubs']
-        return listOfClubs
-
-
-def loadCompetitions():
-    with open('competitions.json') as comps:
-        listOfCompetitions = json.load(comps)['competitions']
-        return listOfCompetitions
+from utils import (
+    loadClubs,
+    loadCompetitions,
+    saveClubs,
+    saveCompetitions,
+    get_club_id_by_email,
+    get_club_id_by_name,
+    get_competition_id_by_name)
 
 
 app = Flask(__name__)
@@ -36,10 +33,8 @@ def index():
 @app.route('/showSummary', methods=['POST'])
 def showSummary():
     email = request.form['email']
-    club = [
-        club for club in clubs
-        if club['email'] == email]
-    if club == []:
+    club_id = get_club_id_by_email(email)
+    if club_id is None:
         return render_template(
             'index.html',
             email_not_found=email), \
@@ -47,7 +42,7 @@ def showSummary():
     else:
         return render_template(
             'welcome.html',
-            club=club[0],
+            club=clubs[club_id],
             competitions=competitions)
 
 
