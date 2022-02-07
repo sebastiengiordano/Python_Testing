@@ -48,6 +48,20 @@ def get_club_id_by_name(name):
     return club_id
 
 
+def get_club_by_id(club_id):
+    return server.clubs[club_id]
+
+
+def get_club_points_by_id(club_id):
+    club = get_club_by_id(club_id)
+    club_point = int(club['points'])
+    # Clubs shouldn't be able to book more than 12 places per competition,
+    # and more than it's available points
+    max_points = min(12, club_point)
+
+    return str(max_points)
+
+
 def get_competition_id_by_name(name):
     competition_id = None
 
