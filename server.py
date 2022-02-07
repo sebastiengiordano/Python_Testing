@@ -56,6 +56,10 @@ def book(competition, club):
     # Check if club and competition have been found
     if club_id is not None and competition_id is not None:
         max_points = get_club_points_by_id(club_id)
+        if max_points == '0':
+            flash(
+                "Warning: You cannot book more place, "
+                "since you have no more point.")
         return render_template(
             'booking.html',
             club=clubs[club_id],
