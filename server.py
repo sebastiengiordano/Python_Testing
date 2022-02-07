@@ -85,6 +85,13 @@ def purchasePlaces():
         - placesRequired)
     saveCompetitions()
     flash('Great-booking complete!')
+    flash('')
+    competition_name = competitions[competition_id]['name']
+    if placesRequired == 1:
+        flash(f'You\'ve book one place for {competition_name}.')
+    else:
+        flash(f'You\'ve book {placesRequired} places '
+                f'for {competition_name}.')
     return render_template(
         'welcome.html',
         club=club,
