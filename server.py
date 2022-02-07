@@ -83,7 +83,7 @@ def purchasePlaces():
         flash('You cannot book places.')
         return render_template(
             'welcome.html',
-            club=club,
+            club=clubs[club_id],
             competitions=competitions), HTTPStatus.BAD_REQUEST
     # Everything is OK
     else:
@@ -100,7 +100,7 @@ def purchasePlaces():
         flash('Great-booking complete!')
         return render_template(
             'welcome.html',
-            club=club,
+            club=clubs[club_id],
             competitions=competitions)
 
 
