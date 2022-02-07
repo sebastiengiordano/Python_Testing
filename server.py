@@ -15,6 +15,7 @@ from utils import (
     saveCompetitions,
     get_club_id_by_email,
     get_club_id_by_name,
+    get_club_points_by_id,
     get_competition_id_by_name,
     str_to_datetime)
 
@@ -49,20 +50,26 @@ def showSummary():
 
 @app.route('/book/<competition>/<club>', methods=['POST'])
 def book(competition, club):
-    print(clubs)
-    foundClub = [c for c in clubs if c['name'] == club][0]
-    foundCompetition = [c for c in competitions if c['name'] == competition][0]
-    if foundClub and foundCompetition:
+    # Get club and competition id
+    club_id = get_club_id_by_name(club)
+    competition_id = get_competition_id_by_name(competition)
+    # Check if club and competition have been found
+    if club_id is not None and competition_id is not None:
+        max_points = get_club_points_by_id(club_id)
         return render_template(
             'booking.html',
-            club=foundClub,
-            competition=foundCompetition)
+            club=clubs[club_id],
+            competition=competitions[competition_id],
+            max_points=max_points)
+
+    flash("Something went wrong-please try again")
+    if club_id is None:
+        return render_template('index.html'), HTTPStatus.BAD_REQUEST
     else:
-        flash("Something went wrong-please try again")
         return render_template(
             'welcome.html',
-            club=club,
-            competitions=competitions)
+            club=clubs[club_id],
+            competitions=competitions), HTTPStatus.BAD_REQUEST
 
 
 @app.route('/purchasePlaces', methods=['POST'])
@@ -86,7 +93,18 @@ def purchasePlaces():
             'welcome.html',
             club=clubs[club_id],
             competitions=competitions), HTTPStatus.BAD_REQUEST
-    # Everything is OK
+
+    # Check if no more than 12 places
+    # per competition has been booked
+    elif placesRequired > 12:
+        flash('    Sorry !!!')
+        flash('You cannot book more than 12 places.')
+        return render_template(
+            'welcome.html',
+            club=club,
+            competitions=competitions), HTTPStatus.BAD_REQUEST
+
+    # Else, everything is OK
     else:
         # Removed points in clubs
         clubs[club_id]["points"] = str(
