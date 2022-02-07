@@ -1,4 +1,3 @@
-import json
 from http import HTTPStatus
 from flask import (
     Flask,
@@ -46,8 +45,9 @@ def showSummary():
             competitions=competitions)
 
 
-@app.route('/book/<competition>/<club>')
+@app.route('/book/<competition>/<club>', methods=['POST'])
 def book(competition, club):
+    print(clubs)
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
     if foundClub and foundCompetition:
@@ -65,15 +65,31 @@ def book(competition, club):
 
 @app.route('/purchasePlaces', methods=['POST'])
 def purchasePlaces():
-    competition = [
-        c for c in competitions
-        if c['name'] == request.form['competition']][0]
-    club = [c for c in clubs if c['name'] == request.form['club']][0]
+    # Get request hidden data
+    competition = request.form['competition']
+    club = request.form['club']
     placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = (
-        int(competition['numberOfPlaces'])
+    # Get club and competition id
+    club_id = get_club_id_by_name(club)
+    competition_id = get_competition_id_by_name(competition)
+    # Removed points in clubs
+    clubs[club_id]["points"] = str(
+        int(clubs[club_id]["points"])
         - placesRequired)
+    saveClubs()
+    # Removed points in competitions
+    competitions[competition_id]['numberOfPlaces'] = str(
+        int(competitions[competition_id]['numberOfPlaces'])
+        - placesRequired)
+    saveCompetitions()
     flash('Great-booking complete!')
+    flash('')
+    competition_name = competitions[competition_id]['name']
+    if placesRequired == 1:
+        flash(f'You\'ve book one place for {competition_name}.')
+    else:
+        flash(f'You\'ve book {placesRequired} places '
+                f'for {competition_name}.')
     return render_template(
         'welcome.html',
         club=club,
