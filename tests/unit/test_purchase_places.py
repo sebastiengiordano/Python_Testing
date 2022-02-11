@@ -8,9 +8,9 @@ import server
     'competition, club, club_id, competition_id, number_of_places,'
     'club_remaining_points, competition_remaining_points',
     [
-        ('Competition in future', 'Testuser1 One', 0, 4, 1, '12', '14'),
-        ('Competition in future', 'Testuser2 Two', 1, 4, 4, '0', '11'),
-        ('Competition in future', 'Testuser3 Three', 2, 4, 10, '2', '5')])
+        ('Competition in future', 'Testuser1 One', 0, 4, 1, '10', '14'),
+        ('Competition in future', 'Testuser2 Two', 1, 4, 1, '1', '14'),
+        ('Competition in future', 'Testuser3 Three', 2, 4, 4, '0', '11')])
 def test__status_code__ok(
         client,
         clubs__data_for_test,

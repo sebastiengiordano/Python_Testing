@@ -15,7 +15,7 @@ from utils import (
     saveCompetitions,
     get_club_id_by_email,
     get_club_id_by_name,
-    get_club_points_by_id,
+    get_club_places_by_id,
     get_competition_id_by_name,
     str_to_datetime)
 
@@ -55,16 +55,16 @@ def book(competition, club):
     competition_id = get_competition_id_by_name(competition)
     # Check if club and competition have been found
     if club_id is not None and competition_id is not None:
-        max_points = get_club_points_by_id(club_id)
-        if max_points == '0':
+        max_places = get_club_places_by_id(club_id)
+        if max_places == '0':
             flash(
                 "Warning: You cannot book more place, "
-                "since you have no more point.")
+                "since you have not enough points.")
         return render_template(
             'booking.html',
             club=clubs[club_id],
             competition=competitions[competition_id],
-            max_points=max_points)
+            max_places=max_places)
 
     flash("Something went wrong-please try again")
     if club_id is None:
@@ -110,10 +110,11 @@ def purchasePlaces():
 
     # Else, everything is OK
     else:
+        pointsRequired = placesRequired * 3
         # Removed points in clubs
         clubs[club_id]["points"] = str(
             int(clubs[club_id]["points"])
-            - placesRequired)
+            - pointsRequired)
         saveClubs()
         # Removed points in competitions
         competitions[competition_id]['numberOfPlaces'] = str(
