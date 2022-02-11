@@ -48,7 +48,7 @@ def showSummary():
             competitions=competitions)
 
 
-@app.route('/book/<competition>/<club>', methods=['POST'])
+@app.route('/book/<competition>/<club>', methods=['GET'])
 def book(competition, club):
     # Get club and competition id
     club_id = get_club_id_by_name(club)

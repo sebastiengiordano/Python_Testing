@@ -13,7 +13,7 @@ def test__status_code__ok(
         clubs__data_for_test,
         competitions__data_for_test,
         competition, club):
-    response = client.post(
+    response = client.get(
         f'/book/{competition}/{club}')
 
     assert response.status_code == HTTPStatus.OK
@@ -33,7 +33,7 @@ def test__status_code__bad_request__unknow_club(
         clubs__data_for_test,
         competitions__data_for_test,
         competition, club):
-    response = client.post(
+    response = client.get(
         f'/book/{competition}/{club}')
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
@@ -55,7 +55,7 @@ def test__status_code__bad_request__unknow_competition(
         clubs__data_for_test,
         competitions__data_for_test,
         competition, club, user_email):
-    response = client.post(
+    response = client.get(
         f'/book/{competition}/{club}')
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
